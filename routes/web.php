@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LocationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [LocationController::class, 'index'])->name('locations.index');
+Route::get('/locations/create', [LocationController::class, 'create'])->name('locations.create');
+Route::post('/locations/create', [LocationController::class, 'store'])->name('locations.store');
+Route::get('/locations/show/{location}', [LocationController::class, 'show'])->name('locations.show');
+Route::post('/locations/show/{location}', [LocationController::class, 'update'])->name('locations.update');
+Route::get('/locations/delete/{location}', [LocationController::class, 'destroy'])->name('locations.destroy');
+

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class LocationController extends Controller
 {
@@ -20,7 +21,7 @@ class LocationController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             "name" => "required|string",
             "longitude" => "required|decimal:3,4",
             "latitude" => "required|decimal:3,4",
@@ -30,12 +31,18 @@ class LocationController extends Controller
                 'unique:locations',
             ],
         ]);
+    
+        if ($validator->fails()) {
+            flash()->addError(implode(" </br> ",$validator->errors()->all()));
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
         $location = new Location();
         $location->name = $request->name;
         $location->longitude = $request->longitude;
         $location->latitude = $request->latitude;
         $location->color = $request->color;
         $location->save();
+        flash()->addSuccess('Location infos were saved successfully!');
         return redirect()->route('locations.index');
     }
 
@@ -46,7 +53,7 @@ class LocationController extends Controller
 
     public function update(Request $request, Location $location)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             "name" => "required|string",
             "longitude" => "required|decimal:3,4",
             "latitude" => "required|decimal:3,4",
@@ -56,17 +63,24 @@ class LocationController extends Controller
                 'unique:locations,color,' . $location->id . ',id',
             ],
         ]);
+    
+        if ($validator->fails()) {
+            flash()->addError(implode(" </br> ",$validator->errors()->all()));
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
         $location->name = $request->name;
         $location->longitude = $request->longitude;
         $location->latitude = $request->latitude;
         $location->color = $request->color;
         $location->save();
+        flash()->addSuccess('Location informations were updated successfully!');
         return redirect()->route('locations.index');
     }
 
     public function destroy(Location $location)
     {
         $location->delete();
+        flash()->addSuccess('Location informations were deleted successfully!');
         return redirect()->route('locations.index');
     }
 }

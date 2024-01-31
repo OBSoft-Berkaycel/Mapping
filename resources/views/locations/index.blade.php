@@ -30,6 +30,7 @@
                             <th class="center th-contrast">Location Name</th>
                             <th class="center th-contrast">Latitude</th>
                             <th class="center th-contrast">Longitude</th>
+                            <th class="center th-contrast">Color Hex code</th>
                             <th class="center"></th>
                         </tr>
                         </thead>
@@ -39,6 +40,14 @@
                                     <td class="center">{{ $location->name }}</td>
                                     <td class="center">{{ $location->latitude }}</td>
                                     <td class="center">{{ $location->longitude }}</td>
+                                    {{-- <td class="center">{{ $location->color }}</td> --}}
+                                    <td class="project-actions text-center">
+                                        <span>
+                                            {{ $location->color }}
+                                        </span>
+                                        <a href="" class="tooltip-error btn btn-lg" style="background-color: {{ $location->color }} !important;">
+                                        </a>
+                                    </td>
                                     <td class="project-actions text-center">
                                         <a class="btn btn-default btn-sm" href="/locations/show/{{$location->id}}"  data-rel="tooltip" title="@lang('edit')">
                                             <i class="fa fa-pencil">

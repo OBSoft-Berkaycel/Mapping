@@ -8,7 +8,7 @@
     <section class="content col-md-12">
         <div class="box box-default">
             <div class="box-header with-border text-center">
-                <h3 class="box-title">Add New Location</h3>
+                <h3 class="box-title">Edit Location</h3>
             </div>
             <form class="form-horizontal" role="form" method="post">
                 @csrf  
@@ -57,6 +57,34 @@
                     </div>
                 </div>
 
+                {{-- Google Maps Codes Start --}}
+                <div class="box-header with-border text-center">
+                    <h3 class="box-title">Location On Map</h3>
+                </div>
+                <div id="map" style="height: 400px;"></div>
+
+                <script type="text/javascript">
+                    function initMap() {
+                    const myLatLng = {lat: {{ $location->latitude }}, lng: {{ $location->longitude }}};
+                    const map = new google.maps.Map(document.getElementById("map"), {
+                        zoom: 5,
+                        center: myLatLng,
+                    });
+
+                    new google.maps.Marker({
+                        position: myLatLng,
+                        map,
+                        title: "Location",
+                    });
+                    }
+
+                    window.initMap = initMap;
+                </script>
+
+                <script type="text/javascript"
+                    src="https://maps.google.com/maps/api/js?key={{ $api_key }}&callback=initMap" >
+                </script>
+                {{-- Google Maps Codes End --}}
 
             {{-- @include('layouts.errors') --}}
             <!-- /.box-footer -->

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\GoogleApi;
 
 class LocationController extends Controller
 {
@@ -48,7 +49,13 @@ class LocationController extends Controller
 
     public function show(Location $location)
     {
-        return view('locations.show', compact('location'));
+        $google_api = GoogleApi::first();
+        $api_key = null;
+        if($google_api)
+        {
+            $api_key = $google_api->api_key;
+        }
+        return view('locations.show', compact('location','api_key'));
     }
 
     public function update(Request $request, Location $location)

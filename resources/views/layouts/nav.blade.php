@@ -13,6 +13,14 @@
                 </span>
                 </a>
             </li>
+            <li {{ Request::is('/google/maps') == true ? 'class=active' : '' }}>
+                <a href="/google/maps">
+                    <i class="fa fa-google"></i>
+                    <span>Google Maps Integration</span>
+                    <span class="pull-right-container">
+                </span>
+                </a>
+            </li>
 
         </ul>
 

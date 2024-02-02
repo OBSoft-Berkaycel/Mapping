@@ -74,7 +74,7 @@
                 <div id="map" style="height: 400px;"></div>
 
                 <script src="https://maps.googleapis.com/maps/api/js?key={{$api_key}}&callback=initMap" async></script>
-                <script>
+                {{-- <script>
                     let map, activeInfoWindow, markers = [];
 
                     /* ----------------------------- Initialize Map ----------------------------- */
@@ -151,14 +151,28 @@
                         console.log(event.latLng.lng());
                     }
 
+                </script> --}}
+                <script>
+                    function initMap() {
+                        var map = new google.maps.Map(document.getElementById('map'), {
+                            zoom: 10,
+                            center: {lat: 41.0082, lng: 28.9784} // origin
+                        });
+         
+                        var locations = @json($locations);
+         
+                        locations.forEach(function (location) {
+                            var marker = new google.maps.Marker({
+                                position: {lat: location.lat, lng: location.lng},
+                                map: map,
+                                title: location.title
+                            });
+                        });
+                    }
                 </script>
                
                 {{-- Google Maps Codes End --}}
 
-
-        
-
-            {{-- @include('layouts.errors') --}}
             <!-- /.box-footer -->
             </form>
         </div>

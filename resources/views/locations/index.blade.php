@@ -75,6 +75,40 @@
                         Add New Location
                     </a>
                 </div>
+                
+            </div>
+        </section>
+
+        <section class="content col-md-12">
+            <div class="box box-default">
+                
+    
+                    {{-- Google Maps Codes Start --}}
+                    <div class="box-header with-border text-center">
+                        <h3 class="box-title">Location On Map</h3>
+                    </div>
+                    <div id="map" style="height: 400px;"></div>
+    
+                    <script src="https://maps.googleapis.com/maps/api/js?key={{$api_key}}&callback=initMap" async></script>
+                    
+                    <script>
+                        function initMap() {
+                            var map = new google.maps.Map(document.getElementById('map'), {
+                                zoom: 10,
+                                center: {lat: 41.0082, lng: 28.9784} // origin
+                            });
+             
+                            var locations = @json($maps);
+             
+                            locations.forEach(function (location) {
+                                var marker = new google.maps.Marker({
+                                    position: {lat: location.lat, lng: location.lng},
+                                    map: map,
+                                    title: location.title
+                                });
+                            });
+                        }
+                    </script>
             </div>
         </section>
 

@@ -12,7 +12,18 @@ class LocationController extends Controller
     public function index()
     {
         $locations = Location::all();
-        return view('locations.index', compact('locations'));
+        $google_api = GoogleApi::first();
+        $api_key = null;
+        if($google_api)
+        {
+            $api_key = $google_api->api_key;
+        }
+        $maps = array();
+        foreach ($locations as $location) {
+            # code...
+            array_push($maps,['lat' => $location->latitude, 'lng' => $location->longitude, 'title' => $location->name]);
+        }
+        return view('locations.index', compact('locations','maps','api_key'));
     }
 
     public function create()
@@ -56,12 +67,10 @@ class LocationController extends Controller
             $api_key = $google_api->api_key;
         }
 
-        $initialMarkers = array([
-            "position" => ["lat" => $location->latitude, "lng" => $location->longitude],
-            "label" => $location->name,
-            "draggable" => true,
-        ]);
-        return view('locations.show', compact('location','api_key','initialMarkers'));
+        $locations = [
+            ['lat' => $location->latitude, 'lng' => $location->longitude, 'title' => $location->name],
+        ];
+        return view('locations.show', compact('location','api_key','locations'));
     }
 
     public function update(Request $request, Location $location)

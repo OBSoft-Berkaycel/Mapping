@@ -3,6 +3,16 @@
 @section('head')
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.4.6/jscolor.min.css">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.4.6/jscolor.min.js"></script>
+
+    <style>
+        .text-center {
+            text-align: center;
+        }
+        #map {
+            width: "100%";
+            height: 400px;
+        }
+    </style>
 @endsection
 @section('content')
     <section class="content col-md-12">
@@ -63,28 +73,90 @@
                 </div>
                 <div id="map" style="height: 400px;"></div>
 
-                <script type="text/javascript">
-                    function initMap() {
-                    const myLatLng = {lat: {{ $location->latitude }}, lng: {{ $location->longitude }}};
-                    const map = new google.maps.Map(document.getElementById("map"), {
-                        zoom: 5,
-                        center: myLatLng,
-                    });
+                <script src="https://maps.googleapis.com/maps/api/js?key={{$api_key}}&callback=initMap" async></script>
+                <script>
+                    let map, activeInfoWindow, markers = [];
 
-                    new google.maps.Marker({
-                        position: myLatLng,
-                        map,
-                        title: "Location",
-                    });
+                    /* ----------------------------- Initialize Map ----------------------------- */
+                    function initMap() {
+                        map = new google.maps.Map(document.getElementById("map"), {
+                            center: {
+                                lat: {{$location->latitude}},
+                                lng: {{$location->longitude}},
+                            },
+                            zoom: 15
+                        });
+
+                        map.addListener("click", function(event) {
+                            mapClicked(event);
+                        });
+
+                        initMarkers();
                     }
 
-                    window.initMap = initMap;
-                </script>
+                    /* --------------------------- Initialize Markers --------------------------- */
+                    function initMarkers() {
+                        const initialMarkers ={!! json_encode($initialMarkers) !!};
 
-                <script type="text/javascript"
-                    src="https://maps.google.com/maps/api/js?key={{ $api_key }}&callback=initMap" >
+                        for (let index = 0; index < initialMarkers.length; index++) {
+
+                            const markerData = initialMarkers[index];
+                            const marker = new google.maps.Marker({
+                                position: markerData.position,
+                                label: markerData.label,
+                                draggable: markerData.draggable,
+                                map
+                            });
+                            markers.push(marker);
+
+                            const infowindow = new google.maps.InfoWindow({
+                                content: `<b>${markerData.position.lat}, ${markerData.position.lng}</b>`,
+                            });
+                            marker.addListener("click", (event) => {
+                                if(activeInfoWindow) {
+                                    activeInfoWindow.close();
+                                }
+                                infowindow.open({
+                                    anchor: marker,
+                                    shouldFocus: false,
+                                    map
+                                });
+                                activeInfoWindow = infowindow;
+                                markerClicked(marker, index);
+                            });
+
+                            marker.addListener("dragend", (event) => {
+                                markerDragEnd(event, index);
+                            });
+                        }
+                    }
+
+                    /* ------------------------- Handle Map Click Event ------------------------- */
+                    function mapClicked(event) {
+                        console.log(map);
+                        console.log(event.latLng.lat(), event.latLng.lng());
+                    }
+
+                    /* ------------------------ Handle Marker Click Event ----------------------- */
+                    function markerClicked(marker, index) {
+                        console.log(map);
+                        console.log(marker.position.lat());
+                        console.log(marker.position.lng());
+                    }
+
+                    /* ----------------------- Handle Marker DragEnd Event ---------------------- */
+                    function markerDragEnd(event, index) {
+                        console.log(map);
+                        console.log(event.latLng.lat());
+                        console.log(event.latLng.lng());
+                    }
+
                 </script>
+               
                 {{-- Google Maps Codes End --}}
+
+
+        
 
             {{-- @include('layouts.errors') --}}
             <!-- /.box-footer -->

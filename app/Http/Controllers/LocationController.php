@@ -55,7 +55,13 @@ class LocationController extends Controller
         {
             $api_key = $google_api->api_key;
         }
-        return view('locations.show', compact('location','api_key'));
+
+        $initialMarkers = array([
+            "position" => ["lat" => $location->latitude, "lng" => $location->longitude],
+            "label" => $location->name,
+            "draggable" => true,
+        ]);
+        return view('locations.show', compact('location','api_key','initialMarkers'));
     }
 
     public function update(Request $request, Location $location)
